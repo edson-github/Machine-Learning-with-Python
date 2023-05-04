@@ -32,8 +32,7 @@ def generate_random_start(model, graph, seed_length=50,new_words=50,diversity=1,
             actual = generated[:] + seq[end_idx:end_idx + new_words]
 
             # Keep adding new words
-            for i in range(new_words):
-
+            for _ in range(new_words):
                 # Make a prediction from the seed
                 preds = model.predict(np.array(seed).reshape(1, -1))[0].astype(np.float64)
 
@@ -54,26 +53,17 @@ def generate_random_start(model, graph, seed_length=50,new_words=50,diversity=1,
                 seed += [next_idx]
                 generated.append(next_idx)
 
-        # Showing generated and actual abstract
-        n = []
-
-        for i in generated:
-            n.append(idx_word.get(i, '==='))
-
+        n = [idx_word.get(i, '===') for i in generated]
         gen_list.append(n)
 
-    a = []
-
-    for i in actual:
-        a.append(idx_word.get(i, '==='))
-
+    a = [idx_word.get(i, '===') for i in actual]
     a = a[seed_length:]
 
     gen_list = [gen[seed_length:seed_length + len(a)] for gen in gen_list]
 
     if return_output:
         return original_sequence, gen_list, a
-	
+
     # HTML formatting
     seed_html = ''
     seed_html = addContent(seed_html, header(
@@ -87,16 +77,14 @@ def generate_random_start(model, graph, seed_length=50,new_words=50,diversity=1,
     a_html = ''
     a_html = addContent(a_html, header('Actual', color='darkgreen'))
     a_html = addContent(a_html, box(remove_spaces(' '.join(a))))
-	
-    st = "<div>" + seed_html + "</div><div>" + gen_html + "</div><div>" + a_html + "</div>" 
-    #return f"<div>{seed_html}</div><div>{gen_html}</div><div>{a_html}</div>"
-    return st
+
+    return f"<div>{seed_html}</div><div>{gen_html}</div><div>{a_html}</div>"
 
 def generate_from_seed(model, graph, seed,new_words=50, diversity=0.75):
     """Generate output from a sequence"""
 
     # Mapping of words to integers
-    word_idx = json.load(open('data/word-index.json')) 
+    word_idx = json.load(open('data/word-index.json'))
     idx_word = {idx: word for word, idx in word_idx.items()}
 
     # Original formated text
@@ -133,33 +121,33 @@ def generate_from_seed(model, graph, seed,new_words=50, diversity=0.75):
     html = addContent(html, header(
         'Input Seed ', color='black', gen_text='Network Output'))
     html = addContent(html, box(start, gen))
-    st = "<div>"+html+"</div>"
-    return st
+    return f"<div>{html}</div>"
 
 
 def header(text, color='black', gen_text=None):
     """Create an HTML header"""
 
-    if gen_text:
-        raw_html = '<h1 style="margin-top:16px;color: {color};font-size:54px"><center>' + str(
-            text) + '<span style="color: red">' + str(gen_text) + '</center></h1>'
-    else:
-        raw_html = '<h1 style="margin-top:12px;color: {color};font-size:54px"><center>' + str(
-            text) + '</center></h1>'
-    return raw_html
+    return (
+        '<h1 style="margin-top:16px;color: {color};font-size:54px"><center>'
+        + str(text)
+        + '<span style="color: red">'
+        + str(gen_text)
+        + '</center></h1>'
+        if gen_text
+        else '<h1 style="margin-top:12px;color: {color};font-size:54px"><center>'
+        + str(text)
+        + '</center></h1>'
+    )
 
 
 def box(text, gen_text=None):
     """Create an HTML box of text"""
 
-    if gen_text:
-        raw_html = '<div style="padding:8px;font-size:28px;margin-top:28px;margin-bottom:14px;">' + str(
-            text) + '<span style="color: red">' + str(gen_text) + '</div>'
-
-    else:
-        raw_html = '<div style="border-bottom:1px inset black;border-top:1px inset black;padding:8px;font-size: 28px;">' + str(
-            text) + '</div>'
-    return raw_html
+    return (
+        f'<div style="padding:8px;font-size:28px;margin-top:28px;margin-bottom:14px;">{str(text)}<span style="color: red">{str(gen_text)}</div>'
+        if gen_text
+        else f'<div style="border-bottom:1px inset black;border-top:1px inset black;padding:8px;font-size: 28px;">{str(text)}</div>'
+    )
 
 
 def addContent(old_html, raw_html):

@@ -11,7 +11,11 @@ NUM_SAMPLES = 1000
 def make_data():
     X,y = make_regression(n_samples=NUM_SAMPLES,n_features=NUM_FEATURES,
                       n_informative=NUM_FEATURES,noise=0.5)
-    data = pd.DataFrame(X,columns=['X'+str(i) for i in range(1,NUM_FEATURES+1)],dtype=np.float16)
+    data = pd.DataFrame(
+        X,
+        columns=[f'X{str(i)}' for i in range(1, NUM_FEATURES + 1)],
+        dtype=np.float16,
+    )
     data['y']=np.array(y,dtype=np.float16)
     return data
 

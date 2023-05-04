@@ -21,25 +21,24 @@ def apicall():
 	except Exception as e:
 		raise e
 
-	clf = 'lm_model_v1.pk'
-	
 	if test.empty:
 		return(bad_request())
-	else:
-		#Load the saved model
-		print("Loading the model...")
-		loaded_model = None
-		with open('./models/'+clf,'rb') as f:
-			loaded_model = pickle.load(f)
+	#Load the saved model
+	print("Loading the model...")
+	loaded_model = None
+	clf = 'lm_model_v1.pk'
 
-		print("The model has been loaded...doing predictions now...")
-		print()
-		predictions = loaded_model.predict(test)
-			
-		prediction_series = pd.Series(predictions)
-		response = jsonify(prediction_series.to_json())
-		response.status_code = 200
-		return (response)
+	with open(f'./models/{clf}', 'rb') as f:
+		loaded_model = pickle.load(f)
+
+	print("The model has been loaded...doing predictions now...")
+	print()
+	predictions = loaded_model.predict(test)
+
+	prediction_series = pd.Series(predictions)
+	response = jsonify(prediction_series.to_json())
+	response.status_code = 200
+	return (response)
 
 @app.errorhandler(400)
 def bad_request(error=None):
