@@ -101,7 +101,6 @@ class Metrics:
         if not self.is_fitted:
             print("Model not fitted yet!")
             return None
-        metrics = {}
         items = (
             ("sse", self.sse()),
             ("sst", self.sst()),
@@ -111,9 +110,7 @@ class Metrics:
             ("AIC:", self.aic()),
             ("BIC:", self.bic()),
         )
-        for item in items:
-            metrics[item[0]] = item[1]
-        return metrics
+        return {item[0]: item[1] for item in items}
 
 
 class Inference:
@@ -208,10 +205,7 @@ class Diagnostics_plots:
             print("Model not fitted yet!")
             return None
         num_plots = self.features_.shape[1]
-        if num_plots % 3 == 0:
-            nrows = int(num_plots / 3)
-        else:
-            nrows = int(num_plots / 3) + 1
+        nrows = int(num_plots / 3) if num_plots % 3 == 0 else int(num_plots / 3) + 1
         ncols = 3
         fig, ax = plt.subplots(nrows, ncols, figsize=(15, nrows * 3.5))
         axes = ax.ravel()
@@ -226,7 +220,7 @@ class Diagnostics_plots:
                 alpha=0.8,
             )
             axes[i].grid(True)
-            axes[i].set_xlabel("Feature X[{}]".format(i))
+            axes[i].set_xlabel(f"Feature X[{i}]")
             axes[i].set_ylabel("Residuals")
             axes[i].hlines(
                 y=0,
@@ -412,7 +406,7 @@ class Multicollinearity:
         lm = sm.OLS(self.target_, sm.add_constant(self.features_)).fit()
         for i in range(self.features_.shape[1]):
             v = vif(np.matrix(self.features_), i)
-            print("Variance inflation factor for feature {}: {}".format(i, round(v, 2)))
+            print(f"Variance inflation factor for feature {i}: {round(v, 2)}")
 
 
 class MyLinearRegression(

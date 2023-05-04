@@ -277,9 +277,10 @@ Every time the page refreshes, the code generates new random data,
 and the plot below regenerates as well.
 """
 # Random data-filled coulmns
-df = pd.DataFrame(np.random.normal(loc=5,
-scale=5, size=50).reshape(10, 5),
-columns = ['A'+ str(i) for i in range(1, 6)])
+df = pd.DataFrame(
+    np.random.normal(loc=5, scale=5, size=50).reshape(10, 5),
+    columns=[f'A{str(i)}' for i in range(1, 6)],
+)
 
 # Two derived columns
 df['A6'] = 10*np.sin(df['A1'])
@@ -312,9 +313,9 @@ We can easily ask the user a filename and write the filtered data to that file!
 csv_filename = str(st.text_input("Enter a filename for saving the DataFrame as a CSV file",
                                 max_chars=30))
 
-if ('.csv' not in csv_filename and len(csv_filename)>0):
+if '.csv' not in csv_filename and csv_filename != "":
     csv_filename += ".csv"
-if len(csv_filename)>0:
+if csv_filename != "":
     df_filtered.to_csv(csv_filename)
     st.markdown("#### File was saved.")
 else:
@@ -400,6 +401,7 @@ The slidebar widget is created by this code,
 ```
 x = st.slider('x', -8, 8)
 """
+
 x = st.slider('x', -8, 8)
 
 """
@@ -411,7 +413,7 @@ as we move the slider up and down.
 We are printing the function value below. Move the slidebar and see how the
 evaluation changes.
 """
-st.write(f"$f(x)$ evaluated at {x} is: "+str(round(f(x), 3)))
+st.write(f"$f(x)$ evaluated at {x} is: {str(round(f(x), 3))}")
 
 """
 ---

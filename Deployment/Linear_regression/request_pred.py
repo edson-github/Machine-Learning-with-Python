@@ -27,11 +27,11 @@ resp = requests.post("http://0.0.0.0:5000/predict", \
 if (str(resp.status_code)=='200'):
 	print("Response received correctly.")
 	print()
-	
+
 x=resp.json()
 j = json.loads(x)
 d = dict(j)
 
 for k,v in (d.items()):
-	print("{}: {}".format(k,round(v,2)))
+	print(f"{k}: {round(v, 2)}")
 	print()

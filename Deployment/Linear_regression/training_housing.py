@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 
-import os 
+import os
 import json
 import io
 import requests
@@ -17,36 +17,36 @@ cwd = os.getcwd()
 
 # Checks if the dataset is in the local '/data' folder
 # If not present, pulls from Github repo, otherwise reads from the local folder
-if not os.path.isdir(cwd+"/data") or data_filename not in os.listdir(cwd+"/data"):
+if not os.path.isdir(f"{cwd}/data") or data_filename not in os.listdir(
+	f"{cwd}/data"
+):
 	url="https://raw.githubusercontent.com/tirthajyoti/Machine-Learning-with-Python/master/Datasets/USA_Housing.csv"
-	print("Downloading data from {} ".format(url))
+	print(f"Downloading data from {url} ")
 	s=requests.get(url).content
 
 	df = pd.read_csv(io.StringIO(s.decode('utf-8')))
 	print("Dataset is downloaded.")
 	# Save the data in local '/data' folder
-	if not os.path.isdir(cwd+"/data"):
-		os.makedirs(cwd+"/data")
+	if not os.path.isdir(f"{cwd}/data"):
+		os.makedirs(f"{cwd}/data")
 	df.to_csv("data/USA_housing.csv")
-	print()
 else:
 	df = pd.read_csv("data/USA_housing.csv")
 	print("Dataset loaded from local directory")
-	print()
-
+print()
 # Make a list of data frame column names
 l_column = list(df.columns) # Making a list out of column names
 len_feature = len(l_column) # Length of column vector list
 
 # Put all the numerical features in X and Price in y, 
 # Ignore Address which is string for linear regression
-X = df[l_column[0:len_feature-2]]
+X = df[l_column[:len_feature-2]]
 y = df[l_column[len_feature-2]]
 
 #print("Feature set size:",X.shape)
 #print("Variable set size:",y.shape)
 #print()
-print("Features variables: ",l_column[0:len_feature-2])
+print("Features variables: ", l_column[:len_feature-2])
 print()
 
 # Create X and y train and test splits in one command using a split ratio and a random seed
@@ -83,16 +83,14 @@ print()
 if __name__ == '__main__':
 	filename = 'lm_model_v1.pk'
 	print("Now saving the model to a serialized format (pickle)...")
-	if not os.path.isdir(cwd+"/models"):
+	if not os.path.isdir(f"{cwd}/models"):
 		os.makedirs(cwd+"/models")
 	with open('models/'+filename, 'wb') as file:
 		pickle.dump(lm, file)
 	# Save some of the test data in a CSV
 	print("Saving test data to a file...")
 	print()
-	if os.path.isdir(cwd+"/data"):
-		X_test.to_csv("data/housing_test.csv")
-	else:
+	if not os.path.isdir(cwd + "/data"):
 		os.makedirs(cwd+"/data")
-		X_test.to_csv("data/housing_test.csv")
+	X_test.to_csv("data/housing_test.csv")
 	

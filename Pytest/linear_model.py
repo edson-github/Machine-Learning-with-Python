@@ -31,14 +31,14 @@ def train_linear_model(X,y,
         # Fit
         model.fit(X_train, y_train)
         # Save
-        fname = filename+'.sav'
+        fname = f'{filename}.sav'
         dump(model, fname)
         # Compute scores
         r2_train = model.score(X_train,y_train)
         r2_test = model.score(X_test,y_test)
         # Return scores in a dictionary
         return {'Train-score':r2_train, 'Test-score': r2_test}
-    
+
     except AssertionError as msg: 
         print(msg)
         return msg    
